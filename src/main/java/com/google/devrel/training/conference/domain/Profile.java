@@ -1,12 +1,18 @@
 package com.google.devrel.training.conference.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.appengine.repackaged.com.google.common.collect.ImmutableList;
 import com.google.devrel.training.conference.form.ProfileForm.TeeShirtSize;
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 
 // TODO indicate that this class is an Entity
 @Entity
+@Cache
 public class Profile {
 	String displayName;
 	String mainEmail;
@@ -15,6 +21,25 @@ public class Profile {
 	// TODO indicate that the userId is to be used in the Entity's key
 	@Id
 	String userId;
+	
+	private List<String> conferenceKeysToAttend = new ArrayList<String>(0);
+	
+	public void addToConferenceKeysToAttend(String key){
+		conferenceKeysToAttend.add(key);
+	}
+	
+	public void removeFromConferenceKeysToAttend(String key){
+		if (conferenceKeysToAttend.contains(key)) {
+			conferenceKeysToAttend.remove(key);
+		}else{
+			throw new IllegalArgumentException("Invalid conference key:" + key);
+		}
+	}
+	
+	public List<String> getConferenceKeysToAttend(){
+		return ImmutableList.copyOf(conferenceKeysToAttend);
+	}
+	
     
     /**
      * Public constructor for Profile.
